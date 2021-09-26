@@ -1,4 +1,5 @@
 import flask
+import os
 from myApp1 import fetch_data
 
 app = flask.Flask(__name__)
@@ -16,4 +17,7 @@ def index():
         lyrics_page = data["lyrics_url"]
     )
 
-app.run(debug = True)
+app.run(
+    host = '0.0.0.0',
+    port = int(os.getenv("PORT", 8080))
+)
