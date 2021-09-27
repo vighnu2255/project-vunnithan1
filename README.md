@@ -1,6 +1,19 @@
 #**Project Documentation**
 
+##**Heroku Webapp URL:** <https://fast-headland-57258.herokuapp.com/>
+
+##Resources used in this repository
+
+1. **Frameworks:** Flask
+2. **Web Deployment:** Heroku
+3. **APIs:** Spotify, Genius
+4. **Libraries:** requests, dotenv, json, os, random
+
+Here, **requests** is used for the `GET` and `POST` functions in order to authorize and interact with each APIs, **dotenv** and **os** are used to access variables defined and initialized in the environment and the rest are used to access and display information within code 
+
 ##**How to setup and run repository files**
+
+For someone looking to fork thhis repository here are the additional resources required: 
 
 1. First clone repository to local machine through the command line using `git clone`
 
