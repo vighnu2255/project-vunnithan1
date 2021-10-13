@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>My Spotify and Genius App</title>
+        <link href="/static/myStyles1.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <h1>{{name}}</h1>
+        <h2>by: {{artist}}</h2>
+        <br>
+        <img src={{image_song}}>
+        <br>
+        <audio controls="controls" id="audioPreview">
+            <source src="{{player}}" type="audio/mp3"/>
+        </audio>
+        <br>
+        <a href={{lyrics_page}}>Click here to view the lyrics</a>
+    </body>
+</html>
