@@ -1,6 +1,6 @@
 import flask
 import os
-from myApp1 import fetch_data
+from myApp import fetch_data
 
 app = flask.Flask(__name__)
 
