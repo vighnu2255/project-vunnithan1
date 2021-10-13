@@ -9,7 +9,7 @@ app = flask.Flask(__name__)
 def index():
     data = fetch_data()
     return flask.render_template(
-        "index1.html",
+        "index.html",
         name = data["name_song"],
         artist = data["artist_name"],
         image_song = data["picture_song"],
