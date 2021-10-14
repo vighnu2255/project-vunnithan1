@@ -3,9 +3,17 @@
         <body>
             <h1>Login here</h1>
             <form method="POST" action="/login">
-                <input type="text" name="username" placeholder="Your Username">
+                <input type="text" name="l_username" placeholder="Your Username">
                 <input type="submit" value="Submit">                
             </form>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+            {% endwith %}
         </body>
     </head>
 </html>
