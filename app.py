@@ -1,11 +1,17 @@
 import flask
 import os
+'''
 from myApp import fetch_data
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
-
+'''
 app = flask.Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("Database_Uri")
+'''
+url = os.getenv("DATABASE_URL") 
+if url and url.startswith("postgres://"): 
+    url = url.replace("postgres://", "postgresql://", 1) 
+app.config["SQLALCHEMY_DATABASE_URI"] = url
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv("Secret_Key")
 
@@ -27,9 +33,15 @@ class Artist_Info(db.Model):
 db.create_all()
 
 
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 @app.route("/")
 def signup():
-    return flask.render_templates("signup.html")
+    return flask.render_template("signup.html")
 
 @app.route("/", methods = ["POST"])
 def signup_post():
@@ -43,11 +55,12 @@ def signup_post():
         db.session.add(user)
         db.commit()
 
+
 @app.route("/login")
 def login():
-    return flask.render_templates("login.html")
+    return flask.render_template("login.html")
 
-@app.route("/login_post", methods = ["POST"])
+@app.route("/login", methods = ["POST"])
 def login_post():
     username = flask.request.form.get('l_username')
     user = User(username=username)
@@ -71,6 +84,10 @@ def index():
         player = data["player"],
         lyrics_page = data["lyrics_url"]
     )
+'''
+@app.route("/")
+def index():
+    return "Hello World"
 
 if __name__ == '__main__':
     app.run(

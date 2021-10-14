@@ -1,3 +1,7 @@
 Flask
 python-dotenv
 requests
+Flask-login
+Flask-SQLAlchemy
+SQLAlchemy
+psycopg2
