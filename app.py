@@ -1,12 +1,11 @@
 import flask
 import os
-'''
 from myApp import fetch_data
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
-'''
+
 app = flask.Flask(__name__)
-'''
+
 url = os.getenv("DATABASE_URL") 
 if url and url.startswith("postgres://"): 
     url = url.replace("postgres://", "postgresql://", 1) 
@@ -84,10 +83,6 @@ def index():
         player = data["player"],
         lyrics_page = data["lyrics_url"]
     )
-'''
-@app.route("/")
-def index():
-    return "Hello World"
 
 if __name__ == '__main__':
     app.run(
