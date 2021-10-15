@@ -47,12 +47,13 @@ def signup_post():
     username = flask.request.form.get('s_username')
     user = User(username=username)
 
-    exists = User.query.filter_by(username=user.username) is not None
+    exists = User.query.filter_by(username=user.username).first() 
+    print(exists)
     if exists:
         return flask.redirect(flask.url_for('homepage'))
     else:
         db.session.add(user)
-        db.commit()
+        db.session.commit()
         return flask.redirect(flask.url_for('login'))
 
 
@@ -65,26 +66,32 @@ def login_post():
     username = flask.request.form.get('l_username')
     user = User.query.filter_by(username=username).first()
 
-    exists = user is not None
+    exists = user
     if exists:
         login_user(user)
         return flask.redirect(flask.url_for('homepage'))
     else:
         flask.flash("Invalid User Id entered")
         return flask.redirect(flask.url_for('login'))
-'''
-@app.route("/homepage", methods = ["POST"])
-def homepage_post():
-    art_name = flask.request.form.get('artist')
-'''  
+
+@app.route("/welcome")
+@login_required
+def welcome():
+    if flask.request.method == "POST":
+        art_name = flask.request.form.get('artist')
+        user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
+        db.session.add(user_artist)
+        db.session.commit()
+    return flask.render_template()
+
 
 @app.route("/homepage")
-#@login_required
-def index():
-    if request.method == "POST":
+@login_required
+def homepage():
+    if flask.request.method == "POST":
         art_name = flask.request.form.get('artist')
-    data = fetch_data(art_name)
-    if data != "Couldn't fetch Artist":
+    data = fetch_data("6eUKZXaKkcviH0Ku9w2n3V")
+    if data != "Couldn't fetch track details":
         return flask.render_template(
             "index.html",
             name = data["name_song"],

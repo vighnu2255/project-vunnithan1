@@ -6,7 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
-def fetch_data(name):
+def fetch_data(a_id):
     
     #Spotify Authorization
 
@@ -37,6 +37,8 @@ def fetch_data(name):
     #Randon id chosen
     id = id_list[rand_num1]
     '''
+
+    '''
     ARTIST_SEARCH_URL = f"https://api.spotify.com/v1.search/"
     params = {
         "q" : name,
@@ -45,13 +47,15 @@ def fetch_data(name):
     
     name_request = requests.get(ARTIST_SEARCH_URL, headers = header1, params = params)
     name_data = name_request.json()
+    print(name_data)
     try:
         a_data = name_data["artists"]
         items = a_data["items"]
         id = items[0]["id"]
     except KeyError:
         return "Couldn't fetch Artist"
-
+    '''
+    id = a_id
 
     URL_SPOTIFY = f"https://api.spotify.com/v1/artists/{id}/top-tracks"
 
@@ -60,6 +64,7 @@ def fetch_data(name):
     #Obtaining data from Spotify
 
     spotify_data = spotify_response.json()
+    print(spotify_data)
 
     rand = random.randint(0,9)
 
@@ -69,7 +74,7 @@ def fetch_data(name):
         song_picture = spotify_data['tracks'][rand]['album']['images'][1]['url']
         song_player = spotify_data['tracks'][rand]['preview_url']
     except KeyError:
-        print("Couldn't fetch track details")
+        return "Couldn't fetch track details"
 
     #Genius Authorization
 
