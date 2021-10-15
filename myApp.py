@@ -6,7 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
-def fetch_data():
+def fetch_data(name):
     
     #Spotify Authorization
 
@@ -29,15 +29,29 @@ def fetch_data():
         "market" : "US"
     }
 
-    
+    '''
     #Artist ids of TheWeekend, Travis Scott, Ed Sheeran
     id_list =["1Xyo4u8uXC1ZmMpatF05PJ", "0Y5tJX1MQlPlqiwlOH1tJY","6eUKZXaKkcviH0Ku9w2n3V"]
     rand_num1 = random.randint(0,2)
     
     #Randon id chosen
     id = id_list[rand_num1]
+    '''
+    ARTIST_SEARCH_URL = f"https://api.spotify.com/v1.search/"
+    params = {
+        "q" : name,
+        "type" : "artist"
+    }
     
-    #ARTIST_SEARCH_URL = ""
+    name_request = requests.get(ARTIST_SEARCH_URL, headers = header1, params = params)
+    name_data = name_request.json()
+    try:
+        a_data = name_data["artists"]
+        items = a_data["items"]
+        id = items[0]["id"]
+    except KeyError:
+        return "Couldn't fetch Artist"
+
 
     URL_SPOTIFY = f"https://api.spotify.com/v1/artists/{id}/top-tracks"
 

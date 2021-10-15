@@ -4,6 +4,10 @@
         <link href="/static/myStyles.css" rel="stylesheet"/>
     </head>
     <body>
+        <form method="POST" action="/login">
+            <input type="text" name="artist" placeholder="Your Artist">
+            <input type="submit" value="Submit">                
+        </form>
         <h1>{{name}}</h1>
         <h2>by: {{artist}}</h2>
         <br>
