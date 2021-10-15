@@ -84,14 +84,17 @@ def index():
     if request.method == "POST":
         art_name = flask.request.form.get('artist')
     data = fetch_data(art_name)
-    return flask.render_template(
-        "index.html",
-        name = data["name_song"],
-        artist = data["artist_name"],
-        image_song = data["picture_song"],
-        player = data["player"],
-        lyrics_page = data["lyrics_url"]
-    )
+    if data != "Couldn't fetch Artist":
+        return flask.render_template(
+            "index.html",
+            name = data["name_song"],
+            artist = data["artist_name"],
+            image_song = data["picture_song"],
+            player = data["player"],
+            lyrics_page = data["lyrics_url"]
+        )
+    else:
+        return "Invalid Artist info"
 
 if __name__ == '__main__':
     app.run(
