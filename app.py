@@ -48,7 +48,6 @@ def signup_post():
     user = User(username=username)
 
     exists = User.query.filter_by(username=user.username).first() 
-    print(exists)
     if exists:
         return flask.redirect(flask.url_for('welcome'))
     else:
@@ -80,9 +79,16 @@ def welcome_post():
     if flask.request.method == "POST":
         art_name = flask.request.form.get('artist')
         user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
-        db.session.add(user_artist)
-        db.session.commit()
-        return flask.redirect(flask.url_for('welcome'))
+        
+        error = False
+        exists = Artist_Info.query.filter_by(username=user_artist.username, artist_id=art_name).first()
+        if exists:
+            error = True
+            return flask.render_template("welcome.html", error = error)
+        else:
+            db.session.add(user_artist)
+            db.session.commit()
+            return flask.redirect(flask.url_for('welcome'))
 
 @app.route("/welcome")
 @login_required

@@ -8,5 +8,8 @@
             <input type="text" name="artist" placeholder="Your Artist">
             <input type="submit" value="Submit">                
         </form>
+        {% if error %}
+            <p>Artist ID already entered<p>
+        {% endif %}
     </body>
 </html>
