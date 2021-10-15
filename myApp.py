@@ -29,12 +29,15 @@ def fetch_data():
         "market" : "US"
     }
 
+    
     #Artist ids of TheWeekend, Travis Scott, Ed Sheeran
     id_list =["1Xyo4u8uXC1ZmMpatF05PJ", "0Y5tJX1MQlPlqiwlOH1tJY","6eUKZXaKkcviH0Ku9w2n3V"]
     rand_num1 = random.randint(0,2)
     
     #Randon id chosen
     id = id_list[rand_num1]
+    
+    #ARTIST_SEARCH_URL = ""
 
     URL_SPOTIFY = f"https://api.spotify.com/v1/artists/{id}/top-tracks"
 

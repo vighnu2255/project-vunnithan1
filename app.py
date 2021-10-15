@@ -64,7 +64,9 @@ def login_post():
     username = flask.request.form.get('l_username')
     user = User(username=username)
     user_check = User.query.filter_by(username=user.username)
-    if user_check.is_authenticated():
+
+    exists = User.query.filter_by(username=user_check.username) is not None
+    if exists:
         login_user(user_check)
         flask.redirect(flask.url_for('/homepage'))
     else:
