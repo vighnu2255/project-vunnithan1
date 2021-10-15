@@ -1,5 +1,6 @@
 import flask
 import os
+import random
 from myApp import fetch_data
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
@@ -33,7 +34,6 @@ db.create_all()
 
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -50,7 +50,7 @@ def signup_post():
     exists = User.query.filter_by(username=user.username).first() 
     print(exists)
     if exists:
-        return flask.redirect(flask.url_for('homepage'))
+        return flask.redirect(flask.url_for('welcome'))
     else:
         db.session.add(user)
         db.session.commit()
@@ -69,28 +69,38 @@ def login_post():
     exists = user
     if exists:
         login_user(user)
-        return flask.redirect(flask.url_for('homepage'))
+        return flask.redirect(flask.url_for('welcome'))
     else:
         flask.flash("Invalid User Id entered")
         return flask.redirect(flask.url_for('login'))
 
-@app.route("/welcome")
+@app.route("/welcome", methods = ["POST"])
 @login_required
-def welcome():
+def welcome_post():
     if flask.request.method == "POST":
         art_name = flask.request.form.get('artist')
         user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
         db.session.add(user_artist)
         db.session.commit()
-    return flask.render_template()
+        return flask.redirect(flask.url_for('welcome'))
+
+@app.route("/welcome")
+@login_required
+def welcome():
+    return flask.render_template("welcome.html")
 
 
 @app.route("/homepage")
 @login_required
 def homepage():
-    if flask.request.method == "POST":
-        art_name = flask.request.form.get('artist')
-    data = fetch_data("6eUKZXaKkcviH0Ku9w2n3V")
+    ids = Artist_Info.query.filter_by(username=current_user.username).all()
+    print(ids)
+    id_list = []
+    for el in ids:
+        id_list.append(el.artist_id)
+    rand = random.randint(0, len(id_list) - 1)
+    current_id = id_list[rand]
+    data = fetch_data(current_id)
     if data != "Couldn't fetch track details":
         return flask.render_template(
             "index.html",
