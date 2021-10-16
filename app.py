@@ -1,7 +1,7 @@
 import flask
 import os
 import random
-from myApp import fetch_data
+from myApp import fetch_data, id_check
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 
@@ -31,6 +31,9 @@ class Artist_Info(db.Model):
     artist_id = db.Column(db.String(80))
 
 db.create_all()
+
+db.session.query(Artist_Info).delete()
+db.session.commit()
 
 
 
@@ -66,12 +69,17 @@ def login_post():
     user = User.query.filter_by(username=username).first()
 
     exists = user
+    error = False
     if exists:
         login_user(user)
         return flask.redirect(flask.url_for('welcome'))
     else:
+        error = True
+        return flask.render_template("login.html", error=error)
+        '''
         flask.flash("Invalid User Id entered")
         return flask.redirect(flask.url_for('login'))
+        '''
 
 @app.route("/welcome", methods = ["POST"])
 @login_required
@@ -80,11 +88,17 @@ def welcome_post():
         art_name = flask.request.form.get('artist')
         user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
         
-        error = False
+        error1 = False
+        check = id_check(art_name)
+        if check != art_name:
+            error1 = True
+            return flask.render_template("welcome.html", error1 = error1, error2 = False)
+        
+        error2 = False
         exists = Artist_Info.query.filter_by(username=user_artist.username, artist_id=art_name).first()
         if exists:
-            error = True
-            return flask.render_template("welcome.html", error = error)
+            error2 = True
+            return flask.render_template("welcome.html", error1 = False, error2 = error2)
         else:
             db.session.add(user_artist)
             db.session.commit()
@@ -100,24 +114,21 @@ def welcome():
 @login_required
 def homepage():
     ids = Artist_Info.query.filter_by(username=current_user.username).all()
-    print(ids)
     id_list = []
     for el in ids:
         id_list.append(el.artist_id)
     rand = random.randint(0, len(id_list) - 1)
     current_id = id_list[rand]
     data = fetch_data(current_id)
-    if data != "Couldn't fetch track details":
-        return flask.render_template(
-            "index.html",
-            name = data["name_song"],
-            artist = data["artist_name"],
-            image_song = data["picture_song"],
-            player = data["player"],
-            lyrics_page = data["lyrics_url"]
-        )
-    else:
-        return "Invalid Artist info"
+    print(data)
+    return flask.render_template(
+        "index.html",
+        name = data["name_song"],
+        artist = data["artist_name"],
+        image_song = data["picture_song"],
+        player = data["player"],
+        lyrics_page = data["lyrics_url"]
+    )
 
 if __name__ == '__main__':
     app.run(

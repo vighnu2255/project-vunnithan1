@@ -8,14 +8,14 @@ body{
 h1{
     font-weight : bold;
     font-size : 40px;
-    color : dodgerblue;
+    color : white;
     text-transform: uppercase;
 }
 
 h2{
     font-size : 28px;
     font-weight : bold;
-    color: cyan;
+    color: white;
 }
 
 
@@ -37,3 +37,7 @@ a:link {
 a:visited {
     color: blue;
   }
+
+p{
+    color: white;
+}

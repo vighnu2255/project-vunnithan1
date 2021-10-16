@@ -7,6 +7,40 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
 
+def id_check(a_id):
+    
+    URL_AUTH = "https://accounts.spotify.com/api/token"
+    
+    #POST to obtain access token
+    authorization_response = requests.post(URL_AUTH, {
+        "grant_type": 'client_credentials',
+        "client_id": os.getenv("Spotify_Client_ID"),
+        "client_secret": os.getenv("Spotify_Client_Secret")
+    })
+
+    response = authorization_response.json()
+    access_token = response["access_token"]
+
+    header = {
+        "Authorization" : "Bearer {}".format(access_token)
+    }
+    params = {
+        "id" : a_id
+    }
+
+    ARTIST_URL = f"https://api.spotify.com/v1/artists/{a_id}"
+
+    name_request = requests.get(ARTIST_URL, headers = header, params = params)
+    name_data = name_request.json()
+    print(name_data)
+    
+    try:
+        result = name_data["error"]["status"]
+        return result
+    except KeyError:
+        return a_id
+    
+
 def fetch_data(a_id):
     
     #Spotify Authorization
@@ -56,9 +90,9 @@ def fetch_data(a_id):
     except KeyError:
         return "Couldn't fetch Artist"
     '''
-    id = a_id
 
-    URL_SPOTIFY = f"https://api.spotify.com/v1/artists/{id}/top-tracks"
+
+    URL_SPOTIFY = f"https://api.spotify.com/v1/artists/{a_id}/top-tracks"
 
     spotify_response = requests.get(URL_SPOTIFY, params = parameter1, headers = header1)
 
