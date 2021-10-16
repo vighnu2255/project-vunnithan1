@@ -26,12 +26,13 @@ login_manager.init_app(app)
 
 db = SQLAlchemy(app)
 
-
+# Table to hold usernames for user validation
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True)
 
 
+# Table to hold favorite artist ids
 class Artist_Info(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
@@ -40,25 +41,24 @@ class Artist_Info(db.Model):
 
 db.create_all()
 
-db.session.query(Artist_Info).delete()
-db.session.commit()
-
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# Render signup page
 @app.route("/")
 def signup():
     return flask.render_template("signup.html")
 
 
+# Method executed on input accept on signup page
 @app.route("/", methods=["POST"])
 def signup_post():
     username = flask.request.form.get("s_username")
     user = User(username=username)
-
+    # Check to see if username already exists
     exists = User.query.filter_by(username=user.username).first()
     if exists:
         return flask.redirect(flask.url_for("welcome"))
@@ -68,16 +68,19 @@ def signup_post():
         return flask.redirect(flask.url_for("login"))
 
 
+# Render login page
 @app.route("/login")
 def login():
     return flask.render_template("login.html")
 
 
+# Method executed on input accept on login page
 @app.route("/login", methods=["POST"])
 def login_post():
     username = flask.request.form.get("l_username")
     user = User.query.filter_by(username=username).first()
 
+    # Check to see if username is registered
     exists = user
     error = False
     if exists:
@@ -88,6 +91,7 @@ def login_post():
         return flask.render_template("login.html", error=error)
 
 
+# Method executed on input accept at the welcome page
 @app.route("/welcome", methods=["POST"])
 @login_required
 def welcome_post():
@@ -95,12 +99,14 @@ def welcome_post():
         art_name = flask.request.form.get("artist")
         user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
 
+        # Check for Invalid artist id
         error1 = False
         check = id_check(art_name)
         if check != art_name:
             error1 = True
             return flask.render_template("welcome.html", error1=error1, error2=False)
 
+        # Check to see if artist id already exists
         error2 = False
         exists = Artist_Info.query.filter_by(
             username=user_artist.username, artist_id=art_name
@@ -114,23 +120,28 @@ def welcome_post():
             return flask.redirect(flask.url_for("welcome"))
 
 
+# Render the welcome page
 @app.route("/welcome")
 @login_required
 def welcome():
     return flask.render_template("welcome.html")
 
 
+# Render the homepage to diplay songs
 @app.route("/homepage")
 @login_required
 def homepage():
+    # artist id list to hold all artists for a specific user
     ids = Artist_Info.query.filter_by(username=current_user.username).all()
     id_list = []
+    # Loop to append all relevant ids
     for el in ids:
         id_list.append(el.artist_id)
     rand = random.randint(0, len(id_list) - 1)
+    # Choosing a random artist from the list
     current_id = id_list[rand]
+    # Fetching song data
     data = fetch_data(current_id)
-    print(data)
     return flask.render_template(
         "index.html",
         name=data["name_song"],

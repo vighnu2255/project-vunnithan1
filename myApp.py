@@ -6,7 +6,7 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
-
+# Method to check if artist id exists
 def id_check(a_id):
 
     URL_AUTH = "https://accounts.spotify.com/api/token"
@@ -40,6 +40,7 @@ def id_check(a_id):
         return a_id
 
 
+# Method to fetch song data
 def fetch_data(a_id):
 
     # Spotify Authorization
