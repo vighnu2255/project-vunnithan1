@@ -1,6 +1,6 @@
 #**Project Documentation**
 
-##**Heroku Webapp URL:** <https://obscure-stream-46373.herokuapp.com/>
+##**Heroku Webapp URL:** <https://obscure-stream-46373.herokuapp.com>
 
 ##Resources used in this repository
 
