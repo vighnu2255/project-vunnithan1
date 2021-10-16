@@ -69,7 +69,7 @@ def fetch_data(a_id):
     id_list =["1Xyo4u8uXC1ZmMpatF05PJ", "0Y5tJX1MQlPlqiwlOH1tJY","6eUKZXaKkcviH0Ku9w2n3V"]
     rand_num1 = random.randint(0,2)
     
-    #Randon id chosen
+    #Randon id chosen 
     id = id_list[rand_num1]
     '''
 
