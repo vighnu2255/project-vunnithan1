@@ -116,8 +116,13 @@ def main():
 	...
 """
 
+
 def check_ids(id_list):
-    
+    for id in id_list:
+        if id_check(id) == 400:
+            list(filter(lambda a: a != id, id_list))
+    return id_list
+
 
 app.run(
     host=os.getenv("IP", "0.0.0.0"),
