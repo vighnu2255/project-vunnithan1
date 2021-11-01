@@ -10,7 +10,7 @@ function App() {
   console.log(args);
 
   // TODO: Implement your main page as a React component.
-  const [ArtistIds, setArtistIds] = useState(args["artist_ids"]);
+  const [ArtistIds, setArtistIds] = useState(args["artist_id"]);
   const [SongName, setSongName] = useState(args["name_song"]);
   const [ArtistName, setArtistName] = useState(args["artist_name"]);
   const [Images, setImages] = useState(args["picture_song"]);

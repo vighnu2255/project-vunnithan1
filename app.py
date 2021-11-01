@@ -63,20 +63,20 @@ def index():
 
 app.register_blueprint(bp)
 
-"""
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-
-@app.route('/signup')
+@app.route("/")
 def signup():
-	return flask.render_template("signup.html")
+    return flask.render_template("signup.html")
 
-@app.route('/signup', methods=["POST"])
+
+@app.route("/", methods=["POST"])
 def signup_post():
-	username = flask.request.form.get("s_username")
+    username = flask.request.form.get("s_username")
     user = User(username=username)
     # Check to see if username already exists
     exists = User.query.filter_by(username=user.username).first()
@@ -87,15 +87,16 @@ def signup_post():
         db.session.commit()
         return flask.redirect(flask.url_for("login"))
 
-@app.route('/login')
+
+@app.route("/login")
 def login():
     return flask.render_template("login.html")
 
-@app.route('/login', methods=["POST"])
-def login_post():
-	username = flask.request.form.get("l_username")
-    user = User.query.filter_by(username=username).first()
 
+@app.route("/login", methods=["POST"])
+def login_post():
+    username = flask.request.form.get("l_username")
+    user = User.query.filter_by(username=username).first()
     # Check to see if username is registered
     exists = user
     error = False
@@ -106,15 +107,31 @@ def login_post():
         error = True
         return flask.render_template("login.html", error=error)
 
-@app.route('/save', methods=["POST"])
+
+@app.route("/save", methods=["POST"])
 def save():
-    ...
+    removed_ids = []
+    curr_user = current_user.username
 
+    react_response = request.json
+    artist_id_react = react_response["artists"]
+    artist_id_react = check_ids(artist_id_react)
 
-@app.route('/')
-def main():
-	...
-"""
+    db_artist_ids = get_all_records(curr_user)
+    for record in artist_id_react:
+        if record not in db_artist_ids:
+            db_artist_ids.append(record)
+
+    for record in db_artist_ids:
+        if record not in artist_id_react:
+            removed_ids.append(record)
+
+    delete_records(removed_ids, curr_user)
+
+    rem_ids = Artist_Info.query.filter_by(username=username).all()
+    rem_id_list = []
+    for id in rem_ids:
+        rem_id_list.append(id.artist_id)
 
 
 def check_ids(id_list):
@@ -122,6 +139,29 @@ def check_ids(id_list):
         if id_check(id) == 400:
             list(filter(lambda a: a != id, id_list))
     return id_list
+
+
+def get_all_records(username):
+    records = Artist_Info.query.filter_by(username=username).all()
+    record_list = []
+    for record in records:
+        record_list.append(record.artist_id)
+    return record_list
+
+
+def add_records(newList, username):
+    for record in newList:
+        artist_record = Artist_Info(username=username, artist_id=record)
+        db.session.add(artist_record)
+        db.session.commit()
+
+
+def delete_records(newList, username):
+    for record in newList:
+        db.session.query(Artist_Info).filter_by(
+            username=username, artist_id=record
+        ).delete()
+        db.session.commit()
 
 
 app.run(
