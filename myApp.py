@@ -102,6 +102,7 @@ def fetch_data(a_id):
 
     # Return dictionary with relevant info for webpage
     return {
+        "artist_id": a_id,
         "name_song": song_name,
         "artist_name": song_artist,
         "picture_song": song_picture,

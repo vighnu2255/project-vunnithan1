@@ -17,18 +17,14 @@ function App() {
   const [Preview, setPreview] = useState(args["player"]);
   const [Lyrics, setLyrics] = useState(args["lyrics_url"]);
   const inputId = useRef(inputId);
+
   function onClickAdd() {
-
-  }
-
-  function onClickSave() {
-    let newId = inputId.current.value;
-    let newList = [...ArtistIds, newId];
+    let newList = [...ArtistIds, inputId.current.value];
     setArtistIds(newList);
     inputId.current.value = "";
   }
   function onClickDelete(index) {
-    let newList = ArtistIds.splice();
+    let newList = ArtistIds.splice(index, 1);
     setArtistIds(newList);
   }
   function onClickSave() {
@@ -64,7 +60,7 @@ function App() {
       <br />
       <div>
         <input ref={inputId} type="text" placeholder="Artist ID" />
-        <button onClick={onCLickAdd}>Add Artist</button>
+        <button onClick={onClickAdd}>Add Artist</button>
         <button onClick={onClickSave}>Save Artist IDs </button>
       </div>
     </div>

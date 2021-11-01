@@ -81,7 +81,7 @@ def signup_post():
     # Check to see if username already exists
     exists = User.query.filter_by(username=user.username).first()
     if exists:
-        return flask.redirect(flask.url_for("welcome"))
+        return flask.redirect(flask.url_for("index"))
     else:
         db.session.add(user)
         db.session.commit()
@@ -101,7 +101,7 @@ def login_post():
     error = False
     if exists:
         login_user(user)
-        return flask.redirect(flask.url_for("welcome"))
+        return flask.redirect(flask.url_for("index"))
     else:
         error = True
         return flask.render_template("login.html", error=error)
@@ -116,6 +116,8 @@ def main():
 	...
 """
 
+def check_ids(id_list):
+    
 
 app.run(
     host=os.getenv("IP", "0.0.0.0"),
