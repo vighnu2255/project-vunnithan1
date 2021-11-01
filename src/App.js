@@ -7,7 +7,9 @@ function App() {
   // fetches JSON data passed in by flask.render_template and loaded
   // in public/index.html in the script with id "data"
   const args = JSON.parse(document.getElementById("data").text);
+  console.log(args);
 
+  // TODO: Implement your main page as a React component.
   const [ArtistIds, setArtistIds] = useState(args[]);
   const [SongName, setSongName] = useState(args["name_song"]);
   const [ArtistName, setArtistName] = useState(args["artist_name"]);
@@ -15,9 +17,16 @@ function App() {
   const [Preview, setPreview] = useState(args["player"]);
   const [Lyrics, setLyrics] = useState(args["lyrics_url"]);
 
+  function onClickAdd() {
 
-  console.log(args);
-  // TODO: Implement your main page as a React component.
+  }
+
+  function onClickSave() {
+
+  }
+  function onClickDelete() {
+
+  }
 
   return (
     <div>
@@ -32,7 +41,11 @@ function App() {
       <br />
       <a href={args.lyrics_url}>Lyrics</a>
       <br />
-
+      <div>
+        <input ref={inputId} type="text" placeholder="Artist ID" />
+        <button onClick={onCLickAdd}>Add Artist</button>
+        <button onClick={onClickSave}>Save Artist IDs </button>
+      </div>
     </div>
   );
 }
