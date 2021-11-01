@@ -10,22 +10,43 @@ function App() {
   console.log(args);
 
   // TODO: Implement your main page as a React component.
-  const [ArtistIds, setArtistIds] = useState(args[]);
+  const [ArtistIds, setArtistIds] = useState(args["artist_ids"]);
   const [SongName, setSongName] = useState(args["name_song"]);
   const [ArtistName, setArtistName] = useState(args["artist_name"]);
   const [Images, setImages] = useState(args["picture_song"]);
   const [Preview, setPreview] = useState(args["player"]);
   const [Lyrics, setLyrics] = useState(args["lyrics_url"]);
-
+  const inputId = useRef(inputId);
   function onClickAdd() {
 
   }
 
   function onClickSave() {
-
+    let newId = inputId.current.value;
+    let newList = [...ArtistIds, newId];
+    setArtistIds(newList);
+    inputId.current.value = "";
   }
-  function onClickDelete() {
-
+  function onClickDelete(index) {
+    let newList = ArtistIds.splice();
+    setArtistIds(newList);
+  }
+  function onClickSave() {
+    let artistJson = { "artistIds": ArtistIds };
+    fetch("/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(artistJSON)
+    })
+      .then(response => response.json())
+      .then(data => {
+        setArtistIds(data.artist_ids)
+        setSongName(data.name_song)
+        setArtistName(data.artist_name)
+        setImages(data.picture_song)
+        setPreview(data.player)
+        setLyrics(data.lyrics_url)
+      })
   }
 
   return (
