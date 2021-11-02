@@ -124,6 +124,7 @@ def save():
     curr_user = current_user.username
 
     react_response = request.json
+    print(react_response)
     artist_id_react = react_response["artists"]
     artist_id_react = check_ids(artist_id_react)
 
@@ -143,6 +144,13 @@ def save():
     for id in rem_ids:
         rem_id_list.append(id.artist_id)
 
+    rand = random.randint(0, len(rem_id_list) - 1)
+    current_id = rem_id_list[rand]
+    DATA = fetch_data(current_id)
+    data = json.dumps(DATA)
+
+    return jsonify(data)
+    """
     return jsonify(
         {
             "artist_id": rem_id_list,
@@ -153,6 +161,7 @@ def save():
             "lyrics_url": lyrics_data,
         }
     )
+    """
 
 
 def check_ids(id_list):
