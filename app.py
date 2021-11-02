@@ -59,9 +59,8 @@ def index():
     # Loop to append all relevant ids
     for el in ids:
         id_list.append(el.artist_id)
-    rand = random.randint(0, len(id_list) - 1)
     # Choosing a random artist from the list
-    current_id = id_list[rand]
+    current_id = random.choice(id_list)
     # Fetching song data
     DATA = fetch_data(current_id)
     data = json.dumps(DATA)
@@ -91,7 +90,7 @@ def signup_post():
     # Check to see if username already exists
     exists = User.query.filter_by(username=user.username).first()
     if exists:
-        return flask.redirect(flask.url_for("index"))
+        return flask.redirect(flask.url_for("welcome"))
     else:
         db.session.add(user)
         db.session.commit()
@@ -112,10 +111,44 @@ def login_post():
     error = False
     if exists:
         login_user(user)
-        return flask.redirect(flask.url_for("index"))
+        return flask.redirect(flask.url_for("welcome"))
     else:
         error = True
         return flask.render_template("login.html", error=error)
+
+
+@app.route("/welcome", methods=["POST"])
+def welcome_post():
+    if flask.request.method == "POST":
+        art_name = flask.request.form.get("artist")
+        user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
+
+        # Check for Invalid artist id
+        error1 = False
+        check = id_check(art_name)
+        if check != art_name:
+            error1 = True
+            return flask.render_template("welcome.html", error1=error1, error2=False)
+
+        # Check to see if artist id already exists
+        error2 = False
+        exists = Artist_Info.query.filter_by(
+            username=user_artist.username, artist_id=art_name
+        ).first()
+        if exists:
+            error2 = True
+            return flask.render_template("welcome.html", error1=False, error2=error2)
+        else:
+            db.session.add(user_artist)
+            db.session.commit()
+            return flask.redirect(flask.url_for("welcome"))
+
+
+# Render the welcome page
+@app.route("/welcome")
+@login_required
+def welcome():
+    return flask.render_template("welcome.html")
 
 
 @app.route("/save", methods=["POST"])
@@ -144,8 +177,7 @@ def save():
     for id in rem_ids:
         rem_id_list.append(id.artist_id)
 
-    rand = random.randint(0, len(rem_id_list) - 1)
-    current_id = rem_id_list[rand]
+    current_id = random.choice(rem_id_list)
     DATA = fetch_data(current_id)
     data = json.dumps(DATA)
 

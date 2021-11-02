@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <link href="/static/myStyles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h1>Submit your Artist ID here</h1>
+    <br>
+    <form method="POST" action="/welcome">
+        <input type="text" name="artist" placeholder="Your Artist">
+        <input type="submit" value="Submit">
+    </form>
+    {% if error1 %}
+    <p>Invalid Artist ID
+    <p>
+        {% endif %}
+        {% if error2 %}
+    <p>Artist ID already entered
+    <p>
+        {% endif %}
+
+
+
+        <a href="/index">Song Explorer</a>
+</body>
+
+</html>
