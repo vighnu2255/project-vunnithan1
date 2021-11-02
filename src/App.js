@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState, useRef } from 'react';
+import { Id } from './Id.js';
 
 
 function App() {
@@ -32,31 +33,32 @@ function App() {
     fetch("/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(artistJSON)
+      body: JSON.stringify(artistJson)
     })
       .then(response => response.json())
       .then(data => {
-        setArtistIds(data.artist_ids)
-        setSongName(data.name_song)
-        setArtistName(data.artist_name)
-        setImages(data.picture_song)
-        setPreview(data.player)
-        setLyrics(data.lyrics_url)
+        console.log(data)
+        setArtistIds(data["artist_id"])
+        setSongName(data["name_song"])
+        setArtistName(data["artist_name"])
+        setImages(data["picture_song"])
+        setPreview(data["player"])
+        setLyrics(data["lyrics_url"])
       })
   }
 
   return (
     <div>
-      <h1>{args.name_song}</h1>
-      <h2>by: {args.artist_name}</h2>
+      <h1>{SongName}</h1>
+      <h2>by: {ArtistName}</h2>
       <br />
-      <img src={args.picture_song} />
+      <img src={Images} />
       <br />
       <audio controls="controls" id="audioPreview">
-        <source src={args.player} type="audio/mp3" />
+        <source src={Preview} type="audio/mp3" />
       </audio>
       <br />
-      <a href={args.lyrics_url}>Lyrics</a>
+      <a href={Lyrics}>Lyrics</a>
       <br />
       <div id="deleteButton">
         {ArtistIds.map((artistId, index) => <Id artistId={artistId} onClick={() => onClickDelete(index)} />)}

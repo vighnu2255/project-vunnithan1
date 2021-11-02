@@ -27,10 +27,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("Secret_Key")
 
-"""
+
 login_manager = LoginManager()
 login_manager.init_app(app)
-"""
+
 
 db = SQLAlchemy(app)
 
