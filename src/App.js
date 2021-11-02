@@ -58,7 +58,11 @@ function App() {
       <br />
       <a href={args.lyrics_url}>Lyrics</a>
       <br />
-      <div>
+      <div id="deleteButton">
+        {ArtistIds.map((artistId, index) => <Id artistId={artistId} onClick={() => onClickDelete(index)} />)}
+      </div>
+
+      <div id="addButton">
         <input ref={inputId} type="text" placeholder="Artist ID" />
         <button onClick={onClickAdd}>Add Artist</button>
         <button onClick={onClickSave}>Save Artist IDs </button>
@@ -66,5 +70,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
