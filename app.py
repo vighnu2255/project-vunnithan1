@@ -53,7 +53,17 @@ db.create_all()
 @bp.route("/index")
 def index():
 
-    DATA = fetch_data("6eUKZXaKkcviH0Ku9w2n3V")
+    # artist id list to hold all artists for a specific user
+    ids = Artist_Info.query.filter_by(username=current_user.username).all()
+    id_list = []
+    # Loop to append all relevant ids
+    for el in ids:
+        id_list.append(el.artist_id)
+    rand = random.randint(0, len(id_list) - 1)
+    # Choosing a random artist from the list
+    current_id = id_list[rand]
+    # Fetching song data
+    DATA = fetch_data(current_id)
     data = json.dumps(DATA)
     return flask.render_template(
         "index.html",
@@ -132,6 +142,17 @@ def save():
     rem_id_list = []
     for id in rem_ids:
         rem_id_list.append(id.artist_id)
+
+    return jsonify(
+        {
+            "artist_id": rem_id_list,
+            "name_song": song_name,
+            "artist_name": song_artist,
+            "picture_song": song_picture,
+            "player": song_player,
+            "lyrics_url": lyrics_data,
+        }
+    )
 
 
 def check_ids(id_list):
