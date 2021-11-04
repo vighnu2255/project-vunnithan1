@@ -21,18 +21,24 @@ function App() {
 
   function onClickAdd() {
     let newList = [...ArtistIds, inputId.current.value];
+    console.log(newList)
     setArtistIds(newList);
     inputId.current.value = "";
   }
-  function onClickDelete(index) {
+  function onClickDelete(artistId) {
+    let index = ArtistIds.indexOf(artistId, 0);
     let newList = ArtistIds.splice(index, 1);
     setArtistIds(newList);
   }
   function onClickSave() {
     let artistJson = { "artistIds": ArtistIds };
+    console.log(artistJson)
     fetch("/save", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(artistJson)
     })
       .then(response => response.json())
@@ -61,14 +67,14 @@ function App() {
       <a href={Lyrics}>Lyrics</a>
       <br />
       <div id="deleteButton">
-        {ArtistIds.map((artistId, index) => <Id artistId={artistId} onClick={() => onClickDelete(index)} />)}
+        {ArtistIds.map((artistId) => <Id artistId={artistId} onClick={() => onClickDelete(artistId)} />)}
       </div>
 
       <div id="addButton">
         <input ref={inputId} type="text" placeholder="Artist ID" />
         <button onClick={onClickAdd}>Add Artist</button>
-        <button onClick={onClickSave}>Save Artist IDs </button>
       </div>
+      <button onClick={onClickSave}>Save Artist IDs </button>
     </div>
   );
 }

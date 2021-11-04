@@ -58,7 +58,10 @@ def fetch_data(a_id):
     )
 
     response = authorization_response.json()
-    access_token = response["access_token"]
+    try:
+        access_token = response["access_token"]
+    except KeyError:
+        return "Couldn't fetch access token"
 
     header1 = {"Authorization": "Bearer {}".format(access_token)}
     parameter1 = {"market": "US"}
@@ -70,7 +73,6 @@ def fetch_data(a_id):
     # Obtaining data from Spotify
 
     spotify_data = spotify_response.json()
-    print(spotify_data)
 
     rand = random.randint(0, 9)
 

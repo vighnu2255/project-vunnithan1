@@ -41,7 +41,7 @@ class User(UserMixin, db.Model):
 
 
 # Table to hold favorite artist ids
-class Artist_Info(db.Model):
+class ArtistInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
     artist_id = db.Column(db.String(80))
@@ -54,7 +54,7 @@ db.create_all()
 def index():
 
     # artist id list to hold all artists for a specific user
-    ids = Artist_Info.query.filter_by(username=current_user.username).all()
+    ids = ArtistInfo.query.filter_by(username=current_user.username).all()
     id_list = []
     # Loop to append all relevant ids
     for el in ids:
@@ -121,7 +121,10 @@ def login_post():
 def welcome_post():
     if flask.request.method == "POST":
         art_name = flask.request.form.get("artist")
-        user_artist = Artist_Info(username=current_user.username, artist_id=art_name)
+        user_artist = ArtistInfo(username=current_user.username, artist_id=art_name)
+        print()
+        print()
+        print()
 
         # Check for Invalid artist id
         error1 = False
@@ -132,13 +135,17 @@ def welcome_post():
 
         # Check to see if artist id already exists
         error2 = False
-        exists = Artist_Info.query.filter_by(
+        exists = ArtistInfo.query.filter_by(
             username=user_artist.username, artist_id=art_name
         ).first()
         if exists:
             error2 = True
             return flask.render_template("welcome.html", error1=False, error2=error2)
         else:
+            print(user_artist)
+            print()
+            print()
+            print()
             db.session.add(user_artist)
             db.session.commit()
             return flask.redirect(flask.url_for("welcome"))
@@ -156,9 +163,10 @@ def save():
     removed_ids = []
     curr_user = current_user.username
 
-    react_response = request.json
+    react_response = flask.request.json
     print(react_response)
-    artist_id_react = react_response["artists"]
+
+    artist_id_react = react_response["artistIds"]
     artist_id_react = check_ids(artist_id_react)
 
     db_artist_ids = get_all_records(curr_user)
@@ -170,9 +178,9 @@ def save():
         if record not in artist_id_react:
             removed_ids.append(record)
 
-    delete_records(removed_ids, curr_user)
+    # delete_records(removed_ids, curr_user)
 
-    rem_ids = Artist_Info.query.filter_by(username=username).all()
+    rem_ids = ArtistInfo.query.filter_by(username=curr_user).all()
     rem_id_list = []
     for id in rem_ids:
         rem_id_list.append(id.artist_id)
@@ -181,7 +189,7 @@ def save():
     DATA = fetch_data(current_id)
     data = json.dumps(DATA)
 
-    return jsonify(data)
+    return flask.jsonify(data)
     """
     return jsonify(
         {
@@ -204,7 +212,7 @@ def check_ids(id_list):
 
 
 def get_all_records(username):
-    records = Artist_Info.query.filter_by(username=username).all()
+    records = ArtistInfo.query.filter_by(username=username).all()
     record_list = []
     for record in records:
         record_list.append(record.artist_id)
@@ -213,14 +221,14 @@ def get_all_records(username):
 
 def add_records(newList, username):
     for record in newList:
-        artist_record = Artist_Info(username=username, artist_id=record)
+        artist_record = ArtistInfo(username=username, artist_id=record)
         db.session.add(artist_record)
         db.session.commit()
 
 
 def delete_records(newList, username):
     for record in newList:
-        db.session.query(Artist_Info).filter_by(
+        db.session.query(ArtistInfo).filter_by(
             username=username, artist_id=record
         ).delete()
         db.session.commit()
