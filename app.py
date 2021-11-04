@@ -90,6 +90,7 @@ def signup_post():
     # Check to see if username already exists
     exists = User.query.filter_by(username=user.username).first()
     if exists:
+        login_user(exists)
         return flask.redirect(flask.url_for("welcome"))
     else:
         db.session.add(user)
